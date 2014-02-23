@@ -2,22 +2,27 @@
 kbbz
 ==========
 
-Basic usage:
+Setup:
 
 ::
-	setToken(access_token)
-	statuses = getMyData(num_statuses)
+	import likes
+	likes.setToken(access_token)
+
+My statuses:
+
+::
+	statuses = likes.getMyData(num_statuses)
 	
 Friend's statuses:
 
 ::
-	statuses = getMyData(num_statuses, friend_id)
+	statuses = likes.getMyData(num_statuses, friend_id)
 	
 	
 Printing to data files:
 
 ::
-	printFriendFiles(num_statuses, num_friends, directory)  ## end directory with a /
+	likes.printFriendFiles(num_statuses, num_friends, directory)  ## end directory with a /
 	
 
 Bugs/Notes

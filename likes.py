@@ -9,9 +9,10 @@ import facebook
 
 ## Data collection ##
 
-token = "CAACEdEose0cBAAtxMXNDRb6LMnYuLDcoQ59wVhSung2i0CCiKOIBrURZBm3ZAoGdzWTFBf0kHUALbOQ8ViZB2yPstoJRWuPdk2WPDzDSGDVjZA4x8jengr3L1RFqW68oDMaesyPdyDViYbnrwSoGFUJ8Gz5kBZC4tXuev3GRyKFYABr7lkwKnYfYPigHLozZADcIrbZCZCjVYwZDZD"
+token = ""
 
 def setToken(t):
+	global token
 	token = t
 
 def getStatuses(id, l, l2=1000):
