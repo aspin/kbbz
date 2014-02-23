@@ -9,7 +9,7 @@ import facebook
 
 ## Data collection ##
 
-global token = "CAACEdEose0cBAAtxMXNDRb6LMnYuLDcoQ59wVhSung2i0CCiKOIBrURZBm3ZAoGdzWTFBf0kHUALbOQ8ViZB2yPstoJRWuPdk2WPDzDSGDVjZA4x8jengr3L1RFqW68oDMaesyPdyDViYbnrwSoGFUJ8Gz5kBZC4tXuev3GRyKFYABr7lkwKnYfYPigHLozZADcIrbZCZCjVYwZDZD"
+token = "CAACEdEose0cBAAtxMXNDRb6LMnYuLDcoQ59wVhSung2i0CCiKOIBrURZBm3ZAoGdzWTFBf0kHUALbOQ8ViZB2yPstoJRWuPdk2WPDzDSGDVjZA4x8jengr3L1RFqW68oDMaesyPdyDViYbnrwSoGFUJ8Gz5kBZC4tXuev3GRyKFYABr7lkwKnYfYPigHLozZADcIrbZCZCjVYwZDZD"
 
 def setToken(t):
 	token = t
