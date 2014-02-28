@@ -6,6 +6,7 @@ Setup:
 
 ::
 	import likes
+	
 	likes.setToken(access_token)
 
 My statuses:
