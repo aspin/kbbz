@@ -21,6 +21,11 @@ Printing to data files:
 
 	likes.printFriendFiles(num_statuses, num_friends, directory)  ## end directory with a /
 	
+Look up Friend ID:
+
+	likes.getFriendID(name) ## automatically considers all names 
+with special characters
+
 
 Bugs/Notes
 ==========

@@ -2,11 +2,6 @@ import facebook
 
 ## Written for Python 2.7.3 ##
 
-##                  BUGS/NOTES                      ##
-#  1. In-built limitation to 100 statuses?  
-#  2. Currently relies on users providing tokens
-#  3. 
-
 ## Data collection ##
 
 token = ""
@@ -36,6 +31,21 @@ def getMyData(limit, id="me", l2=1000):
 		stat_data.append([getMessage(statuses[i]), countLikes(statuses[i]), statuses[i]['updated_time']])
 
 	return stat_data
+
+def getFriendID(name):
+	friends = facebook.GraphAPI(token).get_connections("me", "friends")['data']
+	matches = []
+
+	for i in friends:
+		try:
+			names = str(i['name']).split(" ")
+			if name in names:
+				matches.append(i)
+		except:
+			print "Name not processsed, added automatically."
+			matches.append(i)
+
+	return matches
 
 def getFriendsStatuses(limit):
 	friends = facebook.GraphAPI(token).get_connections("me", "friends")['data']
