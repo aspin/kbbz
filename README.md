@@ -23,8 +23,7 @@ Printing to data files:
 	
 Look up Friend ID:
 
-	likes.getFriendID(name) ## automatically considers all names 
-with special characters
+	likes.getFriendID(name) ## automatically considers all names with special characters
 
 
 Bugs/Notes
