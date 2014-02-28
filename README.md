@@ -4,25 +4,21 @@ kbbz
 
 Setup:
 
-::
 
 	import likes
 	likes.setToken(access_token)
 
 My statuses:
 
-::
 	statuses = likes.getMyData(num_statuses)
 	
 Friend's statuses:
 
-::
 	statuses = likes.getMyData(num_statuses, friend_id)
 	
 	
 Printing to data files:
 
-::
 	likes.printFriendFiles(num_statuses, num_friends, directory)  ## end directory with a /
 	
 
