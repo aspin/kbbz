@@ -4,9 +4,8 @@ kbbz
 
 Setup:
 
-
-	import likes
-	likes.setToken(access_token)
+`import likes`
+`likes.setToken(access_token)`
 
 My statuses:
 
