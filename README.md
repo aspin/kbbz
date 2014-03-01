@@ -5,24 +5,25 @@ kbbz
 Setup:
 
 `import likes`
+
 `likes.setToken(access_token)`
 
 My statuses:
 
-	statuses = likes.getMyData(num_statuses)
+`statuses = likes.getMyData(num_statuses)`
 	
 Friend's statuses:
 
-	statuses = likes.getMyData(num_statuses, friend_id)
+`statuses = likes.getMyData(num_statuses, friend_id)`
 	
 	
 Printing to data files:
 
-	likes.printFriendFiles(num_statuses, num_friends, directory)  ## end directory with a /
+`likes.printFriendFiles(num_statuses, num_friends, directory)`  ## end directory with a /
 	
 Look up Friend ID:
 
-	likes.getFriendID(name) ## automatically considers all names with special characters
+`likes.getFriendID(name)` ## automatically considers all names with special characters
 
 
 Bugs/Notes
