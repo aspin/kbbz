@@ -20,12 +20,15 @@ def setToken(t):
 
 ## Statuses ##
 
-def getUserData(limit, uid="me", l2=1000):
+def getUserStatuses(limit, uid="me", l2=1000):
 	statuses = getStatuses(uid, limit, l2)
 	
 	stat_data = []
 	for i in range(len(statuses)):
 		stat_data.append([getMessage(statuses[i]), countLikes(statuses[i]), statuses[i]['updated_time']])
+
+	for i in range(len(stat_data)-1):
+		stat_data[i].append(getTimeDifference(stat_data[i][2], stat_data[i+1][2]))
 
 	return stat_data
 
@@ -42,6 +45,26 @@ def getMessage(status):
 		return status['message']
 	return ""
 
+def getTimeDifference(time1, time2):
+	total1 = 0  #in seconds
+	total2 = 0
+
+	total1 += int(time1[0:4]) * 365 * 24 * 60 * 60
+	total1 += int(time1[5:7]) * 30 * 24 * 60 * 60
+	total1 += int(time1[8:10]) * 24 * 60 * 60
+	total1 += int(time1[11:13]) * 60 * 60
+	total1 += int(time1[14:16]) * 60
+	total1 += int(time1[17:19])
+
+	total2 += int(time2[0:4]) * 365 * 24 * 60 * 60
+	total2 += int(time2[5:7]) * 30 * 24 * 60 * 60
+	total2 += int(time2[8:10]) * 24 * 60 * 60
+	total2 += int(time2[11:13]) * 60 * 60
+	total2 += int(time2[14:16]) * 60
+	total2 += int(time2[17:19])
+
+	return total1 - total2
+
 # Super expensive operations #
 def getAllFriendsStatuses(limit):
 	friends = graph.get_connections("me", "friends")['data']
@@ -49,7 +72,7 @@ def getAllFriendsStatuses(limit):
 	friend_statuses = []
 	for i in friends:
 		uid = str(i['id'])
-		friend_statuses.append(getUserData(limit, uid))
+		friend_statuses.append(getUserStatuses(limit, uid))
 
 	return friend_statuses
 
@@ -60,7 +83,7 @@ def getAverageFriendLikes(limit):
 	total_statuses = 0
 
 	for i in friends:
-		statuses = getUserData(limit, str(i['id']))
+		statuses = getUserStatuses(limit, str(i['id']))
 		total_statuses += len(statuses)
 		total_likes += total_statuses * getAverageLikes(statuses)
 
@@ -116,7 +139,7 @@ def printFriendFiles(limit, total, directory=""):
 	for i in friends:
 
 		friend_id = str(i['id'])
-		friend_statuses = getUserData(limit, friend_id)
+		friend_statuses = getUserStatuses(limit, friend_id)
 
 		try:
 			d = (directory + str(i['name'])).lower().replace(" ", "_")
