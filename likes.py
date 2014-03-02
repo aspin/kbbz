@@ -29,16 +29,6 @@ def getUserData(limit, uid="me", l2=1000):
 
 	return stat_data
 
-def getAllFriendsStatuses(limit):
-	friends = graph.get_connections("me", "friends")['data']
-
-	friend_statuses = []
-	for i in friends:
-		uid = str(i['id'])
-		friend_statuses.append(getMyData(limit, uid))
-
-	return friend_statuses
-
 def getStatuses(uid, l, l2=1000):
 	return graph.get_connections(uid, "statuses", limit=l, fields="likes.limit("+str(l2)+"),message")['data']
 
@@ -51,6 +41,30 @@ def getMessage(status):
 	if 'message' in status:
 		return status['message']
 	return ""
+
+# Super expensive operations #
+def getAllFriendsStatuses(limit):
+	friends = graph.get_connections("me", "friends")['data']
+
+	friend_statuses = []
+	for i in friends:
+		uid = str(i['id'])
+		friend_statuses.append(getUserData(limit, uid))
+
+	return friend_statuses
+
+def getAverageFriendLikes(limit):
+	friends = graph.get_connections("me", "friends")['data']
+
+	total_likes = 0
+	total_statuses = 0
+
+	for i in friends:
+		statuses = getUserData(limit, str(i['id']))
+		total_statuses += len(statuses)
+		total_likes += total_statuses * getAverageLikes(statuses)
+
+	return total_likes / total_statuses
 
 ## User Attributes ##
 
@@ -102,7 +116,7 @@ def printFriendFiles(limit, total, directory=""):
 	for i in friends:
 
 		friend_id = str(i['id'])
-		friend_statuses = getMyData(limit, friend_id)
+		friend_statuses = getUserData(limit, friend_id)
 
 		try:
 			d = (directory + str(i['name'])).lower().replace(" ", "_")
