@@ -2,13 +2,19 @@
 kbbz
 ==========
 
-Setup:
+Setup
+==========
 
-  Run from terminal:
+Run from terminal:
+
 	python -i likes.py
 
-  Generate some sort of OAuth Token
+Generate some sort of OAuth Token
+
 	setToken(access_token)
+
+Usage
+==========
 
 My statuses:
 
