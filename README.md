@@ -1,4 +1,3 @@
-
 kbbz
 ==========
 
@@ -18,11 +17,11 @@ Usage
 
 My statuses:
 
-	statuses = getMyData(num_statuses)
+	statuses = getUserStatuses(num_statuses)
 	
 Friend's statuses:
 
-	statuses = getMyData(num_statuses, friend_id)
+	statuses = getUserStatuses(num_statuses, friend_id)
 	
 	
 Printing to data files:
