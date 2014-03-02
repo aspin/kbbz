@@ -1,14 +1,20 @@
-==========
+
 kbbz
 ==========
 
-Setup:
+Setup
+----------
 
-  Run from terminal:
+Run from terminal:
+
 	python -i likes.py
 
-  Generate some sort of OAuth Token
+Generate some sort of OAuth Token
+
 	setToken(access_token)
+
+Usage
+----------
 
 My statuses:
 
@@ -33,7 +39,7 @@ Get user attributes (unknown attributes represented with a "?"):
 
 
 Bugs/Notes
-==========
+----------
 
 1. In-built Facebook API limitation to 100 statuses?
 2. Relies on users providing tokens. Develop a better interface.
