@@ -4,26 +4,32 @@ kbbz
 
 Setup:
 
-	import likes
+  Run from terminal:
+	python -i likes.py
 
-	likes.setToken(access_token)
+  Generate some sort of OAuth Token
+	setToken(access_token)
 
 My statuses:
 
-	statuses = likes.getMyData(num_statuses)
+	statuses = getMyData(num_statuses)
 	
 Friend's statuses:
 
-	statuses = likes.getMyData(num_statuses, friend_id)
+	statuses = getMyData(num_statuses, friend_id)
 	
 	
 Printing to data files:
 
-	likes.printFriendFiles(num_statuses, num_friends, directory)  ## end directory with a /
+	printFriendFiles(num_statuses, num_friends, directory)  ## end directory with a /
 	
 Look up Friend ID:
 
-	likes.getFriendID(name) ## automatically considers all names with special characters
+	getFriendID(name) ## automatically considers all names with special characters
+
+Get user attributes (unknown attributes represented with a "?"):
+
+	getUserInfo(user_id)
 
 
 Bugs/Notes

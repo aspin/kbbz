@@ -1,17 +1,46 @@
 import facebook
+import time
 
 ## Written for Python 2.7.3 ##
 
-## Data collection ##
+## TO DO LIST:
+## 		1. Add other needed attributes.
+##		2. Add in function to collect all data from friends and
+##		   aggregate all status data.
 
 token = ""
+graph = 0
 
 def setToken(t):
-	global token
+	global token, graph
 	token = t
+	graph = facebook.GraphAPI(token)
 
-def getStatuses(id, l, l2=1000):
-	return facebook.GraphAPI(token).get_connections(id, "statuses", limit=l, fields="likes.limit("+str(l2)+"),message")['data']
+#### Data collection ####
+
+## Statuses ##
+
+def getUserData(limit, uid="me", l2=1000):
+	statuses = getStatuses(uid, limit, l2)
+	
+	stat_data = []
+	for i in range(len(statuses)):
+		stat_data.append([getMessage(statuses[i]), countLikes(statuses[i]), statuses[i]['updated_time']])
+
+	return stat_data
+
+def getAllFriendsStatuses(limit):
+	friends = graph.get_connections("me", "friends")['data']
+
+	friend_statuses = []
+	for i in friends:
+		uid = str(i['id'])
+		friend_statuses.append(getMyData(limit, uid))
+
+	return friend_statuses
+
+def getStatuses(uid, l, l2=1000):
+	return graph.get_connections(uid, "statuses", limit=l, fields="likes.limit("+str(l2)+"),message")['data']
 
 def countLikes(status):
 	if 'likes' in status:
@@ -23,55 +52,50 @@ def getMessage(status):
 		return status['message']
 	return ""
 
-def getMyData(limit, id="me", l2=1000):
-	statuses = getStatuses(id, limit, l2)
-	
-	stat_data = []
-	for i in range(len(statuses)):
-		stat_data.append([getMessage(statuses[i]), countLikes(statuses[i]), statuses[i]['updated_time']])
+## User Attributes ##
 
-	return stat_data
+#age, gender, location, number of friends
+def getUserInfo(uid):
+	profile = graph.get_object(uid)
+	gender = getGender(profile)
+	age = getAge(profile)
+	location = getLocation(uid)
+	numFriends = countFriends(uid)
 
-def getFriendID(name):
-	friends = facebook.GraphAPI(token).get_connections("me", "friends")['data']
-	matches = []
+	return [age, gender, location, numFriends]
 
-	for i in friends:
-		try:
-			names = str(i['name']).split(" ")
-			if name in names:
-				matches.append(i)
-		except:
-			print "Name not processsed, added automatically."
-			matches.append(i)
+def getGender(profile):
+	if 'gender' in profile:
+		return profile['gender']
+	return "?"
 
-	return matches
+#information rarely available
+def getAge(profile):
+	try:
+		birthday = profile['birthday']
+		year = time.strftime("%Y")
+		return eval(year) - eval(birthday[6:])
+	except:
+		return "?"
 
-def getFriendsStatuses(limit):
-	friends = facebook.GraphAPI(token).get_connections("me", "friends")['data']
+def getLocation(uid):
+	loc = graph.get_connections(uid, "", fields="location")
+	if 'location' in loc:
+		return loc['location']['name'] # not sure what formwat we want here
 
-	friend_statuses = []
-	for i in friends:
-		friend_id = str(i['id'])
-		friend_statuses.append(getMyData(limit, friend_id))
+def countFriends(uid):
+	if uid == "me":
+		uid = "me()"
+	count = graph.fql("SELECT friend_count FROM user WHERE uid=" + uid)['data'][0]
+	if 'friend_count' in count:
+		return count['friend_count']
+	return "?"
 
-	return friend_statuses
+#### Data Output ####
 
-
-## Data analysis ##
-
-def getLikesAbove(data, n):
-
-	lst = []
-	for i in data:
-		if i[1] >= n:
-			lst.append(i)
-	return lst
-
-## Data storage ##
-
+# individual friend files
 def printFriendFiles(limit, total, directory=""):
-	friends = facebook.GraphAPI(token).get_connections("me", "friends")['data']
+	friends = graph.get_connections("me", "friends")['data']
 
 	number = 1
 
@@ -93,3 +117,41 @@ def printFriendFiles(limit, total, directory=""):
 		if number == total:
 			return "Completed."
 	return "Completed."
+
+# aggregate dataset of all friends
+
+
+#### Data analysis / Utility ####
+
+def getLikesAbove(data, n):
+
+	lst = []
+	for i in data:
+		if i[1] >= n:
+			lst.append(i)
+	return lst
+
+def getAverageLikes(data):
+	total = 0
+	numStatuses = 0
+	for i in data:
+		total += i[1]
+		numStatuses += 1
+	return round(float(total) / numStatuses, 3)
+
+def getFriendID(name):
+	nameIn = name.split(" ")
+	friends = graph.get_connections("me", "friends")['data']
+	matches = []
+
+	for i in friends:
+		try:
+			names = str(i['name']).lower().split(" ")
+			for j in nameIn:
+				if j.lower() in names:
+					matches.append(i)
+		except:
+			print "Name not processsed: " + i['name']
+
+	return matches
+
