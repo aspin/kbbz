@@ -1,5 +1,6 @@
 import facebook
 import time
+from nltk.corpus import stopwords
 
 ## Written for Python 2.7.3 ##
 
@@ -191,4 +192,35 @@ def getFriendID(name):
 			print "Name not processsed: " + i['name']
 
 	return matches
+
+def buildWordDict(statusArray):
+	wordDict = dict()
+	sw = set(stopwords.words('english'))
+	for s,l in statusArray:
+		s = filter(lambda w: not w.lower() in sw, s.split())
+		print s
+		likes = l * 1.0
+		print likes
+		wscore = likes / len(s)
+
+		for w in s:
+			if w not in wordDict:
+				wordDict[w] = (1,wscore)
+			else:
+				count, sumScore = wordDict[w]
+				wordDict[w] = (count+1, sumScore+wscore)
+
+	return wordDict
+
+def calStatusScore(status,wordDict):
+	score=0
+	count=0
+	for w in status.split(" "):
+		print w
+		if w in wordDict:
+			wscore = wordDict[w][1] / wordDict[w][0]
+			print wscore
+			score+=wscore
+			count+=1
+	return score/count
 
