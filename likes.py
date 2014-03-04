@@ -1,5 +1,7 @@
+from __future__ import print_function
 import facebook
 import time
+
 
 ## Written for Python 2.7.3 ##
 
@@ -10,6 +12,17 @@ import time
 
 token = ""
 graph = 0
+attributes = """
+@attribute 'age' numeric
+@attribute 'gender' nominal
+@attribute 'location' nominal
+@attribute 'friend_count' numeric
+@attribute 'message_score' numeric
+@attribute 'month' nominal
+@attribute 'hour' nominal
+@attribute 'time_since_last' numeric
+@attribute 'likes' numeric 
+"""
 
 def setToken(t):
 	global token, graph
@@ -18,17 +31,38 @@ def setToken(t):
 
 #### Data collection ####
 
+def getAllUserData(limit, uid="me", l2=1000):
+	user_statuses = getUserStatuses(limit, uid, l2)
+	user_info = getUserInfo(uid)
+
+	for i in range(len(user_statuses)):
+		user_statuses[i] = user_info + user_statuses[i]
+	return user_statuses
+
 ## Statuses ##
 
-def getUserStatuses(limit, uid="me", l2=1000):
+def getUserStatuses(limit, uid, l2):
 	statuses = getStatuses(uid, limit, l2)
 	
 	stat_data = []
 	for i in range(len(statuses)):
-		stat_data.append([getMessage(statuses[i]), countLikes(statuses[i]), statuses[i]['updated_time']])
+		stat_data.append([getMessage(statuses[i]), int(statuses[i]['updated_time'][5:7]), \
+			int(statuses[i]['updated_time'][11:13]), countLikes(statuses[i])])
 
 	for i in range(len(stat_data)-1):
-		stat_data[i].append(getTimeDifference(stat_data[i][2], stat_data[i+1][2]))
+		stat_data[i].insert(3, getTimeDifference(statuses[i]['updated_time'], statuses[i+1]['updated_time']))
+
+	if stat_data:
+		stat_data[len(stat_data)-1].insert(3, "?")
+
+	return stat_data
+
+def getOnlyStatusesLikes(limit, uid, l2=1000):
+	statuses = getStatuses(uid, limit, l2)
+	
+	stat_data = []
+	for i in range(len(statuses)):
+		stat_data.append([getMessage(statuses[i]), countLikes(statuses[i])])
 
 	return stat_data
 
@@ -94,8 +128,11 @@ def getAverageFriendLikes(limit):
 #age, gender, location, number of friends
 def getUserInfo(uid):
 	profile = graph.get_object(uid)
-	gender = getGender(profile)
-	age = getAge(profile)
+	gender = str(getGender(profile))
+	try:
+		age = int(getAge(profile))
+	except:
+		age = str(getAge(profile))
 	location = getLocation(uid)
 	numFriends = countFriends(uid)
 
@@ -130,32 +167,89 @@ def countFriends(uid):
 
 #### Data Output ####
 
-# individual friend files
-def printFriendFiles(limit, total, directory=""):
+# aggregate dataset of all friends
+def printAllStatuses(limit, total):
 	friends = graph.get_connections("me", "friends")['data']
 
+	n = 1
+	training = open("data/training.csv", 'w')
+	print("@relation training", file=training)
+	print(attributes, file=training)
+
+	validation = open("data/validation.csv", 'w')
+	print("@relation validation", file=validation)
+	print(attributes, file=validation)
+
+	test = open("data/test.csv", 'w')
+	print("@relation test", file=test)
+	print(attributes, file=test)
+
+	my_data = getAllUserData(limit)
+	for i in range(0, len(my_data), 3):
+		printLine(training, my_data[i])
+		if i+1 < len(my_data):
+			printLine(validation, my_data[i+1])
+		if i+2 < len(my_data):
+			printLine(test, my_data[i+2])
+
+	for i in friends:
+		friend_id = str(i['id'])
+		friend_data = getAllUserData(limit, friend_id)
+
+		for i in range(0, len(friend_data), 3):
+			printLine(training, friend_data[i])
+			if i+1 < len(friend_data):
+				printLine(validation, friend_data[i+1])
+			if i+2 < len(friend_data):
+				printLine(test, friend_data[i+2])
+
+		n += 1
+
+		if n == total:
+			training.close()
+			validation.close()
+			test.close()
+			return "Completed."
+
+	training.close()
+	validation.close()
+	test.close()
+	return "Completed."
+
+def printLine(fn, lst):
+	for i in lst:
+		try:
+			print(i, file=fn, end=",")
+		except:
+			print("?", file=fn, end=",")
+	print("", file=fn)
+	return
+
+def printOnlyStatusesLikes(limit, total):
+	friends = graph.get_connections("me", "friends")['data']
+	fn = open("data/statuses-likes.txt", 'w')
+
 	number = 1
+
+	my_data = getOnlyStatusesLikes(limit, "me")
+	for i in my_data:
+		print(i, file=fn)
 
 	for i in friends:
 
 		friend_id = str(i['id'])
-		friend_statuses = getUserStatuses(limit, friend_id)
+		friend_statuses = getOnlyStatusesLikes(limit, friend_id)
 
-		try:
-			d = (directory + str(i['name'])).lower().replace(" ", "_")
-			fileOut = open(d, 'w')
-		except:
-			fileOut = open(directory + "profile_" + str(number), 'w')
 		for i in friend_statuses:
-			print >>fileOut, i
-		fileOut.close()
+			print(i, file=fn)
+
 		number += 1
 
 		if number == total:
+			fn.close()
 			return "Completed."
+	fn.close()
 	return "Completed."
-
-# aggregate dataset of all friends
 
 
 #### Data analysis / Utility ####
@@ -188,7 +282,33 @@ def getFriendID(name):
 				if j.lower() in names:
 					matches.append(i)
 		except:
-			print "Name not processsed: " + i['name']
+			print("Name not processsed: " + i['name'])
 
 	return matches
 
+## DEPRECATED FUNCTIONS THAT ARE NOT YET DELETED ##
+
+# # individual friend files
+# def printFriendFiles(limit, total, directory=""):
+# 	friends = graph.get_connections("me", "friends")['data']
+
+# 	number = 1
+
+# 	for i in friends:
+
+# 		friend_id = str(i['id'])
+# 		friend_statuses = getUserStatuses(limit, friend_id)
+
+# 		try:
+# 			d = (directory + str(i['name'])).lower().replace(" ", "_")
+# 			fileOut = open(d, 'w')
+# 		except:
+# 			fileOut = open(directory + "profile_" + str(number), 'w')
+# 		for i in friend_statuses:
+# 			print(i, file=fileOut)
+# 		fileOut.close()
+# 		number += 1
+
+# 		if number == total:
+# 			return "Completed."
+# 	return "Completed."

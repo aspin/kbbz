@@ -15,6 +15,10 @@ Generate some sort of OAuth Token
 Usage
 ----------
 
+Get all user info:
+
+	data = getAllUserData(num_statuses, uid) #uid = friend_id or "me"
+
 My statuses:
 
 	statuses = getUserStatuses(num_statuses)
@@ -22,19 +26,24 @@ My statuses:
 Friend's statuses:
 
 	statuses = getUserStatuses(num_statuses, friend_id)
-	
-	
-Printing to data files:
 
-	printFriendFiles(num_statuses, num_friends, directory)  ## end directory with a /
+Get user attributes (unknown attributes represented with a "?"):
+
+	getUserInfo(user_id)
 	
 Look up Friend ID:
 
 	getFriendID(name) ## automatically considers all names with special characters
 
-Get user attributes (unknown attributes represented with a "?"):
+Print all statuses to data files:
 
-	getUserInfo(user_id)
+	printAllStatuses(num_statuses, num_ppl) #prints to data/test.csv, data/training.csv, data/validation.csv
+
+Print all statuses / likes to data files:
+
+	printOnlyStatusesLikes(num_statuses, num_ppl) #print to data/statuses-likes.txt
+
+
 
 
 Bugs/Notes/To-do/etc.
