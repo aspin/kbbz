@@ -15,7 +15,7 @@ Generate some sort of OAuth Token:
 Get authorization token here: https://developers.facebook.com/tools/explorer/
 
 *	Under User Data Permissions, check `user_about_me`, `user_birthday`, `user_friends`, `user_hometown`, `user_location`, `user_status`
-*	Under Friends Data Permissions, check `friends_about_me`, `friends_birthday`, friends_hometown`, `friends_location`, `friends_status` and `friends_activities`
+*	Under Friends Data Permissions, check `friends_about_me`, `friends_birthday`, `friends_hometown`, `friends_location`, `friends_status` and `friends_activities`
 
 Initialize the word dictionary:
 
