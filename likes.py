@@ -17,7 +17,6 @@ scorer = {}
 attributes = """
 @attribute 'age' numeric
 @attribute 'gender' nominal
-@attribute 'location' nominal
 @attribute 'friend_count' numeric
 @attribute 'message_score' numeric
 @attribute 'month' nominal
@@ -34,7 +33,7 @@ def setToken(t):
 def initDict():
 	global scorer
 	statuses = getOnlyStatusesLikes(100, "me")
-	#statuses += getAllFriendsOnlyStatusesLikes(100)
+	statuses += getAllFriendsOnlyStatusesLikes(100)
 	
 	scorer = buildWordDict(statuses)
 
@@ -148,7 +147,7 @@ def getUserInfo(uid):
 		age = int(getAge(profile))
 	except:
 		age = str(getAge(profile))
-	location = getLocation(uid)
+	#location = getLocation(uid)
 	numFriends = countFriends(uid)
 
 	return [age, gender, location, numFriends]
@@ -171,7 +170,10 @@ def getAge(profile):
 def getLocation(uid):
 	loc = graph.get_connections(uid, "", fields="location")
 	if 'location' in loc:
-		return loc['location']['name'] # not sure what formwat we want here
+		location = loc['location']['name']
+		state = location.split(" ")[1]
+		return state # not sure what format we want here
+	return "?"
 
 def countFriends(uid):
 	if uid == "me":
@@ -208,6 +210,8 @@ def calcStatusScore(status,wordDict):
 			wscore = wordDict[w][1] / wordDict[w][0]
 			score+=wscore
 			count+=1
+	if count == 0:
+		return 0
 	return score/count
 
 #### Data Output ####
