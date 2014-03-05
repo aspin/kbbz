@@ -8,9 +8,13 @@ Run from terminal:
 
 	python -i likes.py
 
-Generate some sort of OAuth Token
+Generate some sort of OAuth Token:
 
 	setToken(access_token)
+
+Initialize the word dictionary:
+
+	initDict()
 
 Usage
 ----------
@@ -21,11 +25,11 @@ Get all user info:
 
 My statuses:
 
-	statuses = getUserStatuses(num_statuses)
+	statuses = getUserStatuses(num_statuses, "me", num_comments, "message")
 	
 Friend's statuses:
 
-	statuses = getUserStatuses(num_statuses, friend_id)
+	statuses = getUserStatuses(num_statuses, friend_id, num_comments, "message")
 
 Get user attributes (unknown attributes represented with a "?"):
 
