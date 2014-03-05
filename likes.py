@@ -136,7 +136,8 @@ def getAllFriendsOnlyStatusesLikes(limit):
 		uid = str(i['id'])
 		data = getOnlyStatusesLikes(limit, uid)
 		print(i['name'] + ", " + str(len(data)))
-		friend_statuses.append(data)
+		for j in data:
+			friend_statuses.append(j)
 
 	return friend_statuses
 ## User Attributes ##
