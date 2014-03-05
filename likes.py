@@ -194,10 +194,13 @@ def buildWordDict(statusArray):
 		if i == []:
 			continue
 		s = i[0]
-		w = i[1]
+		l = i[1]
 		s = filter(lambda w: not w.lower() in sw, s.split())
 		likes = l * 1.0
-		wscore = likes / len(s)
+		if len(s) == 0:
+			wscore = 0;
+		else:
+			wscore = likes / len(s)
 
 		for w in s:
 			if w not in wordDict:
