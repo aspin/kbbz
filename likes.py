@@ -184,6 +184,8 @@ def countFriends(uid):
 		uid = "me()"
 	count = graph.fql("SELECT friend_count FROM user WHERE uid=" + uid)['data'][0]
 	if 'friend_count' in count:
+		if count['friend_count'] == "None":
+			return "?"
 		return count['friend_count']
 	return "?"
 
