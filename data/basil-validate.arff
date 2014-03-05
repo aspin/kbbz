@@ -1,7 +1,7 @@
 @relation validation
 
 @attribute 'age' numeric
-@attribute 'gender' 
+@attribute 'gender' {male,female}
 @attribute 'friend_count' numeric
 @attribute 'message_score' numeric
 @attribute 'month' nominal
