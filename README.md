@@ -45,13 +45,6 @@ Print all statuses to data files:
 
 	printAllStatuses(num_statuses, num_ppl) #prints to data/test.csv, data/training.csv, data/validation.csv
 
-Print all statuses / likes to data files:
-
-	printOnlyStatusesLikes(num_statuses, num_ppl) #print to data/statuses-likes.txt
-
-
-
-
 Bugs/Notes/To-do/etc.
 ----------
 
