@@ -310,6 +310,43 @@ def printOnlyStatusesLikes(limit, total):
 	fn.close()
 	return "Completed."
 
+#### Post-Processing ####
+def removeEndCommas(fileIn, fileOut):
+	fIn = open(fileIn, 'r')
+	fOut = open(fileOut, 'w')
+
+	for line in fIn:
+
+		length = len(line)
+
+		if ",\n" in line:
+			print(line[:length-2], file=fOut)
+		else:
+			print(line, end="", file=fOut)
+
+	fIn.close()
+	fOut.close()
+
+	return "Completed."
+
+def addQuestionMarks(fileIn, fileOut):
+	fIn = open(fileIn, 'r')
+	fOut = open(fileOut, 'w')
+
+	for line in fIn:
+
+		if line[0] == "@" or line[0] == "\n":
+			print(line, end="", file=fOut)
+		else:
+			length = len(line)-1
+			while line[length] != ",":
+				length -= 1
+			print(line[:length+1]+"?", file=fOut)
+
+	fIn.close()
+	fOut.close()
+
+	return "Completed."
 
 #### Data analysis / Utility ####
 
