@@ -1,14 +1,15 @@
 @relation validation
 
 @attribute 'age' numeric
-@attribute 'gender' nominal
+@attribute 'gender' {male,female}
 @attribute 'friend_count' numeric
 @attribute 'message_score' numeric
-@attribute 'month' nominal
-@attribute 'hour' nominal
+@attribute 'month' numeric
+@attribute 'hour' numeric
 @attribute 'time_since_last' numeric
 @attribute 'likes' numeric 
 
+@data
 20,male,781,1.31757450671,1,17,789750,7
 20,male,781,0.39098289078,12,21,1001589,4
 20,male,781,4.50887419706,10,22,7836574,40

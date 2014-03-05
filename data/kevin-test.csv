@@ -1,14 +1,15 @@
 @relation test
 
 @attribute 'age' numeric
-@attribute 'gender' nominal
+@attribute 'gender' {male,female}
 @attribute 'friend_count' numeric
 @attribute 'message_score' numeric
-@attribute 'month' nominal
-@attribute 'hour' nominal
+@attribute 'month' numeric
+@attribute 'hour' numeric
 @attribute 'time_since_last' numeric
 @attribute 'likes' numeric 
 
+@data
 20,male,781,0.651747871884,1,13,924506,?
 20,male,781,0.842278219394,12,7,3119330,?
 20,male,781,0.659074930205,7,5,862470,?

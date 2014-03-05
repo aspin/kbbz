@@ -1,14 +1,15 @@
 @relation training
 
 @attribute 'age' numeric
-@attribute 'gender' nominal
+@attribute 'gender' {male,female}
 @attribute 'friend_count' numeric
 @attribute 'message_score' numeric
-@attribute 'month' nominal
-@attribute 'hour' nominal
+@attribute 'month' numeric
+@attribute 'hour' numeric
 @attribute 'time_since_last' numeric
 @attribute 'likes' numeric 
 
+@data
 20,male,781,0.757688050054,2,7,1001240,9
 20,male,781,0.585695316937,1,21,1207321,4
 20,male,781,0.910593509626,11,4,1925616,10
