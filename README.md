@@ -47,6 +47,17 @@ Look up Friend ID:
 Print all statuses to data files:
 
 	printAllStatuses(num_statuses, num_ppl) #prints to data/test.csv, data/training.csv, data/validation.csv
+	
+Post-Processing
+----------
+
+Remove end commas:
+
+	removeEndCommas(fileIn, fileOut) # remember that fileIn cannot equal fileOut
+	
+Replace likes with question marks:
+
+	addQuestionMarks(fileIn, fileOut) # run this after the above, and only on testing data
 
 Bugs/Notes/To-do/etc.
 ----------
