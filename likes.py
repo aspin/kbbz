@@ -153,7 +153,7 @@ def getUserInfo(uid):
 	#location = getLocation(uid)
 	numFriends = countFriends(uid)
 
-	return [age, gender, location, numFriends]
+	return [age, gender, numFriends]
 
 #helper user info functions
 def getGender(profile):
