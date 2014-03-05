@@ -12,6 +12,8 @@ Generate some sort of OAuth Token:
 
 	setToken(access_token)
 
+Get authorization token here: https://developers.facebook.com/tools/explorer/
+
 Initialize the word dictionary:
 
 	initDict()
