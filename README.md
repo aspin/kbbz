@@ -14,6 +14,9 @@ Generate some sort of OAuth Token:
 
 Get authorization token here: https://developers.facebook.com/tools/explorer/
 
+*	Under User Data Permissions, check `user_friends` and `user_status`
+*	Under Friends Data Permissions, check `friends_status`
+
 Initialize the word dictionary:
 
 	initDict()
