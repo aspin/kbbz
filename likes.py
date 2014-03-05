@@ -190,7 +190,11 @@ def countFriends(uid):
 def buildWordDict(statusArray):
 	wordDict = dict()
 	sw = set(stopwords.words('english'))
-	for s,l in statusArray:
+	for i in statusArray:
+		if i == []:
+			continue
+		s = i[0]
+		w = i[1]
 		s = filter(lambda w: not w.lower() in sw, s.split())
 		likes = l * 1.0
 		wscore = likes / len(s)
