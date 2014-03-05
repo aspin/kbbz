@@ -13,6 +13,7 @@ from nltk.corpus import stopwords
 
 token = ""
 graph = 0
+scorer = {}
 attributes = """
 @attribute 'age' numeric
 @attribute 'gender' nominal
@@ -30,6 +31,13 @@ def setToken(t):
 	token = t
 	graph = facebook.GraphAPI(token)
 
+def initDict():
+	global scorer
+	statuses = getOnlyStatusesLikes(100, "me")
+	#statuses += getAllFriendsOnlyStatusesLikes(100)
+	
+	scorer = buildWordDict(statuses)
+
 #### Data collection ####
 
 def getAllUserData(limit, uid="me", l2=1000):
@@ -42,13 +50,21 @@ def getAllUserData(limit, uid="me", l2=1000):
 
 ## Statuses ##
 
-def getUserStatuses(limit, uid, l2):
+def getUserStatuses(limit, uid, l2, mode="score"):
 	statuses = getStatuses(uid, limit, l2)
 	
 	stat_data = []
-	for i in range(len(statuses)):
-		stat_data.append([getMessage(statuses[i]), int(statuses[i]['updated_time'][5:7]), \
-			int(statuses[i]['updated_time'][11:13]), countLikes(statuses[i])])
+	# retains status messages
+	if mode == "message":
+		for i in range(len(statuses)):
+		 	stat_data.append([getMessage(statuses[i]), int(statuses[i]['updated_time'][5:7]), \
+		 		int(statuses[i]['updated_time'][11:13]), countLikes(statuses[i])])
+
+	# outputs score
+	if mode == "score":
+		for i in range(len(statuses)):
+			stat_data.append([calcStatusScore(getMessage(statuses[i]), scorer), \
+			int(statuses[i]['updated_time'][5:7]), int(statuses[i]['updated_time'][11:13]), countLikes(statuses[i])])
 
 	for i in range(len(stat_data)-1):
 		stat_data[i].insert(3, getTimeDifference(statuses[i]['updated_time'], statuses[i+1]['updated_time']))
@@ -58,6 +74,7 @@ def getUserStatuses(limit, uid, l2):
 
 	return stat_data
 
+#status + likes only
 def getOnlyStatusesLikes(limit, uid, l2=1000):
 	statuses = getStatuses(uid, limit, l2)
 	
@@ -67,6 +84,7 @@ def getOnlyStatusesLikes(limit, uid, l2=1000):
 
 	return stat_data
 
+#helper status data gathering functions
 def getStatuses(uid, l, l2=1000):
 	return graph.get_connections(uid, "statuses", limit=l, fields="likes.limit("+str(l2)+"),message")['data']
 
@@ -111,19 +129,15 @@ def getAllFriendsStatuses(limit):
 
 	return friend_statuses
 
-def getAverageFriendLikes(limit):
+def getAllFriendsOnlyStatusesLikes(limit):
 	friends = graph.get_connections("me", "friends")['data']
 
-	total_likes = 0
-	total_statuses = 0
-
+	friend_statuses = []
 	for i in friends:
-		statuses = getUserStatuses(limit, str(i['id']))
-		total_statuses += len(statuses)
-		total_likes += total_statuses * getAverageLikes(statuses)
+		uid = str(i['id'])
+		friend_statuses.append(getOnlyStatusesLikes(limit, uid))
 
-	return total_likes / total_statuses
-
+	return friend_statuses
 ## User Attributes ##
 
 #age, gender, location, number of friends
@@ -139,6 +153,7 @@ def getUserInfo(uid):
 
 	return [age, gender, location, numFriends]
 
+#helper user info functions
 def getGender(profile):
 	if 'gender' in profile:
 		return profile['gender']
@@ -173,9 +188,7 @@ def buildWordDict(statusArray):
 	sw = set(stopwords.words('english'))
 	for s,l in statusArray:
 		s = filter(lambda w: not w.lower() in sw, s.split())
-		print s
 		likes = l * 1.0
-		print likes
 		wscore = likes / len(s)
 
 		for w in s:
@@ -191,10 +204,8 @@ def calcStatusScore(status,wordDict):
 	score=0
 	count=0
 	for w in status.split(" "):
-		print w
 		if w in wordDict:
 			wscore = wordDict[w][1] / wordDict[w][0]
-			print wscore
 			score+=wscore
 			count+=1
 	return score/count
@@ -348,4 +359,15 @@ def getFriendID(name):
 # 			return "Completed."
 # 	return "Completed."
 
+# def getAverageFriendLikes(limit):
+# 	friends = graph.get_connections("me", "friends")['data']
 
+# 	total_likes = 0
+# 	total_statuses = 0
+
+# 	for i in friends:
+# 		statuses = getUserStatuses(limit, str(i['id']))
+# 		total_statuses += len(statuses)
+# 		total_likes += total_statuses * getAverageLikes(statuses)
+
+# 	return total_likes / total_statuses
