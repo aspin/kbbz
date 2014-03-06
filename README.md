@@ -57,7 +57,7 @@ Remove end commas:
 	
 Replace likes with question marks:
 
-	addQuestionMarks(fileIn, fileOut) # run this after the above, and only on testing data
+	addQuestionMarks(fileIn, fileOut) # run this after the above function, and only on testing data
 
 Bugs/Notes/To-do/etc.
 ----------
