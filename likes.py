@@ -22,6 +22,7 @@ attributes = """
 @attribute 'month' numeric
 @attribute 'hour' numeric
 @attribute 'time_since_last' numeric
+@attribute 'average_user_likes' numeric
 @attribute 'likes' numeric 
 
 @data"""
@@ -71,6 +72,9 @@ def getUserStatuses(limit, uid, l2, mode="score"):
 
 	if stat_data:
 		stat_data[len(stat_data)-1].insert(3, "?")
+		average = getAverageLikes(stat_data)
+		for i in range(len(stat_data)):
+			stat_data[i].insert(4, average)
 
 	return stat_data
 
@@ -120,7 +124,15 @@ def getTimeDifference(time1, time2):
 	total2 += int(time2[14:16]) * 60
 	total2 += int(time2[17:19])
 
-	return total1 - total2
+	return (total1 - total2)/3600
+
+def getAverageLikes(stat_data):
+	total = 0
+	numStatuses = 0
+	for i in stat_data:
+		total += math.exp(i[len(i)-1])
+		numStatuses += 1
+	return round(float(total) / numStatuses, 3)
 
 # Super expensive operations #
 def getAllFriendsStatuses(limit):
@@ -145,6 +157,7 @@ def getAllFriendsOnlyStatusesLikes(limit):
 			friend_statuses.append(j)
 
 	return friend_statuses
+
 ## User Attributes ##
 
 #age, gender, location, number of friends
@@ -364,14 +377,6 @@ def getLikesAbove(data, n):
 		if i[1] >= n:
 			lst.append(i)
 	return lst
-
-def getAverageLikes(data):
-	total = 0
-	numStatuses = 0
-	for i in data:
-		total += i[1]
-		numStatuses += 1
-	return round(float(total) / numStatuses, 3)
 
 def getFriendID(name):
 	nameIn = name.split(" ")
