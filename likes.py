@@ -2,7 +2,7 @@ from __future__ import print_function
 import facebook
 import time
 from nltk.corpus import stopwords
-
+import math
 
 ## Written for Python 2.7.3 ##
 
@@ -90,7 +90,11 @@ def getStatuses(uid, l, l2=1000):
 
 def countLikes(status):
 	if 'likes' in status:
-		return len(status['likes']['data'])
+		numLikes = len(status['likes']['data'])
+		if numLikes == 0:
+			return 0
+		else:
+			return math.log(len(status['likes']['data']))
 	return 0
 
 def getMessage(status):
