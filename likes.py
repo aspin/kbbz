@@ -20,7 +20,7 @@ attributes = """
 @attribute 'friend_count' numeric
 @attribute 'message_score' numeric
 @attribute 'month' {1,2,3,4,5,6,7,8,9,10,11,12}
-@attribute 'time_of_day' {early_morning,morning,afternoon,evening,night,post_midnight}
+@attribute 'time_of_day' {early_morning,morning,noon,afternoon,evening,night,post_midnight}
 @attribute 'time_since_last' numeric
 @attribute 'average_user_likes' numeric
 @attribute 'likes' numeric 
@@ -97,7 +97,9 @@ def getTimeOfDay(hour):
 		return "early morning"
 	elif hour <= 11: # 8am - 11am
 		return "morning"
-	elif hour <= 17: # 12pm - 5pm
+	elif hour <= 2: # 11am - 2pm
+		return "noon"
+	elif hour <= 17: # 2pm - 5pm
 		return "afternoon"
 	elif hour <= 21: # 5pm - 9pm
 		return "evening"
