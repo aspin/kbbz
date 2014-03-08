@@ -19,8 +19,8 @@ attributes = """
 @attribute 'gender' {male,female}
 @attribute 'friend_count' numeric
 @attribute 'message_score' numeric
-@attribute 'month' numeric
-@attribute 'hour' numeric
+@attribute 'month' {1,2,3,4,5,6,7,8,9,10,11,12}
+@attribute 'time_of_day' {early_morning,morning,noon,afternoon,evening,night,post_midnight}
 @attribute 'time_since_last' numeric
 @attribute 'average_user_likes' numeric
 @attribute 'likes' numeric 
