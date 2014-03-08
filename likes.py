@@ -20,7 +20,7 @@ attributes = """
 @attribute 'friend_count' numeric
 @attribute 'message_score' numeric
 @attribute 'month' {1,2,3,4,5,6,7,8,9,10,11,12}
-@attribute 'time_of_day' {early_morning,morning,noon,afternoon,evening,night,post_midnight}
+@attribute 'time_of_day' {early_morning,morning,afternoon,evening,night,post_midnight}
 @attribute 'time_since_last' numeric
 @attribute 'average_user_likes' numeric
 @attribute 'likes' numeric 
@@ -59,13 +59,13 @@ def getUserStatuses(limit, uid, l2, mode="score"):
 	if mode == "message":
 		for i in range(len(statuses)):
 		 	stat_data.append([getMessage(statuses[i]), int(statuses[i]['updated_time'][5:7]), \
-		 		int(statuses[i]['updated_time'][11:13]), countLikes(statuses[i])])
+		 		getTimeOfDay(int(statuses[i]['updated_time'][11:13])), countLikes(statuses[i])])
 
 	# outputs score
 	if mode == "score":
 		for i in range(len(statuses)):
 			stat_data.append([calcStatusScore(getMessage(statuses[i]), scorer), \
-			int(statuses[i]['updated_time'][5:7]), int(statuses[i]['updated_time'][11:13]), countLikes(statuses[i])])
+			int(statuses[i]['updated_time'][5:7]), getTimeOfDay(int(statuses[i]['updated_time'][11:13])), countLikes(statuses[i])])
 
 	for i in range(len(stat_data)-1):
 		stat_data[i].insert(3, getTimeDifference(statuses[i]['updated_time'], statuses[i+1]['updated_time']))
@@ -87,6 +87,24 @@ def getOnlyStatusesLikes(limit, uid, l2=1000):
 		stat_data.append([getMessage(statuses[i]), countLikes(statuses[i])])
 
 	return stat_data
+
+#input: hour of day
+#output: time of day as nominal bucket
+def getTimeOfDay(hour):
+	if hour <= 4: # 12am - 4am
+		return "post_midnight"
+	elif hour <= 8: # 4am - 8am
+		return "early morning"
+	elif hour <= 11: # 8am - 11am
+		return "morning"
+	elif hour <= 17: # 12pm - 5pm
+		return "afternoon"
+	elif hour <= 21: # 5pm - 9pm
+		return "evening"
+	elif hour <= 24: # 9pm - 12am
+		return "night"
+	else:
+		return "error" #should never fall into this case
 
 #helper status data gathering functions
 def getStatuses(uid, l, l2=1000):
