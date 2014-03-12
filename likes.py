@@ -3,6 +3,7 @@ import facebook
 import time
 from nltk.corpus import stopwords
 import math
+from random import shuffle
 
 ## Written for Python 2.7.3 ##
 
@@ -13,7 +14,6 @@ import math
 
 token = ""
 graph = 0
-scorer = {}
 attributes = """
 @attribute 'age' numeric
 @attribute 'gender' {male,female}
@@ -26,6 +26,59 @@ attributes = """
 @attribute 'likes' numeric 
 
 @data"""
+
+def main(t):
+	setToken(t)
+
+	#init dictionary
+	statuses = getAllUserData(100, "me", "message")
+	statuses += getAllFriendsData(100, "message")
+	shuffle(statuses)
+
+	train_size = int((len(statuses)-5000)/2)
+
+	dict_trainer = []
+	for i in statuses[:train_size]:
+		dict_trainer.append([i[3], math.exp(i[len(i)-1])])
+
+	scorer = buildWordDict(dict_trainer)
+
+	for i in statuses[train_size:]:
+		i[3] = calcStatusScore(i[3], scorer)
+
+	test_set = statuses[train_size:train_size+5000]
+	train_set = statuses[train_size+5000:]
+
+	train_file = open("data/training_v1.csv", 'w')
+	print("@relation training", file=train_file)
+	print(attributes, file=train_file)
+
+	test_file = open("data/test_v1.csv", 'w')
+	print("@relation test", file=test_file)
+	print(attributes, file=test_file)
+
+	test_file2 = open("data/test2_v1.csv", 'w')
+	print("@relation test", file=test_file2)
+	print(attributes, file=test_file2)
+
+	for i in test_set:
+		printLine(test_file, i)
+		printLine(test_file2, i)
+
+	for i in train_set:
+		printLine(train_file, i)
+
+	train_file.close()
+	test_file.close()
+	test_file2.close()
+
+	removeEndCommas("data/training_v1.csv", "data/training.csv")
+	removeEndCommas("data/test_v1.csv", "data/test.csv")
+	removeEndCommas("data/test2_v1.csv", "data/test2_v2.csv")
+
+	addQuestionMarks("data/test2_v2.csv", "data/test2.csv")
+
+	return "Completed."	
 
 def setToken(t):
 	global token, graph
@@ -41,8 +94,8 @@ def initDict():
 
 #### Data collection ####
 
-def getAllUserData(limit, uid="me", l2=1000):
-	user_statuses = getUserStatuses(limit, uid, l2)
+def getAllUserData(limit, uid="me", mode="score", l2=1000):
+	user_statuses = getUserStatuses(limit, uid, l2, mode)
 	user_info = getUserInfo(uid)
 
 	for i in range(len(user_statuses)):
@@ -155,13 +208,31 @@ def getAverageLikes(stat_data):
 	return round(float(total) / numStatuses, 3)
 
 # Super expensive operations #
+def getAllFriendData(limit, mode="score"):
+	friends = graph.get_connections("me", "friends")['data']
+
+	friend_statuses = []
+	for i in friends:
+		uid = str(i['id'])
+		data = getAllUserData(limit, uid, mode)
+		try:
+			print(i['name'] + ", " + str(len(data)))
+		except:
+			print(i)
+		for j in data:
+			friend_statuses.append(j)
+
+	return friend_statuses
+
 def getAllFriendsStatuses(limit):
 	friends = graph.get_connections("me", "friends")['data']
 
 	friend_statuses = []
 	for i in friends:
 		uid = str(i['id'])
-		friend_statuses.append(getUserStatuses(limit, uid))
+		data = getUserStatuses(limit, uid)
+		for j in data:
+			friend_statuses.append(j)
 
 	return friend_statuses
 
