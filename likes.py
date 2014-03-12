@@ -34,6 +34,7 @@ def main(t):
 	statuses = getAllUserData(100, "me", "message")
 	statuses += getAllFriendData(100, "message")
 	shuffle(statuses)
+	print("Length:", len(statuses))
 
 	train_size = int((len(statuses)-5000)/2)
 
