@@ -32,7 +32,7 @@ def main(t):
 
 	#init dictionary
 	statuses = getAllUserData(100, "me", "message")
-	statuses += getAllFriendsData(100, "message")
+	statuses += getAllFriendData(100, "message")
 	shuffle(statuses)
 
 	train_size = int((len(statuses)-5000)/2)
