@@ -149,7 +149,7 @@ def getTimeOfDay(hour):
 	if hour <= 4: # 12am - 4am
 		return "post_midnight"
 	elif hour <= 8: # 4am - 8am
-		return "early morning"
+		return "early_morning"
 	elif hour <= 11: # 8am - 11am
 		return "morning"
 	elif hour <= 2: # 11am - 2pm
@@ -294,7 +294,7 @@ def countFriends(uid):
 		uid = "me()"
 	count = graph.fql("SELECT friend_count FROM user WHERE uid=" + uid)['data'][0]
 	if 'friend_count' in count:
-		if count['friend_count'] == "None":
+		if count['friend_count'] is None:
 			return "?"
 		return count['friend_count']
 	return "?"
@@ -483,7 +483,7 @@ def getFriendID(name):
 				if j.lower() in names:
 					matches.append(i)
 		except:
-			print("Name not processsed: " + i['name'])
+			print("Name not processsed: " + i)
 
 	return matches
 
