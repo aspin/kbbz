@@ -27,7 +27,8 @@ attributes = """
 
 @data"""
 
-def main(t):
+def main():
+	t = raw_input("Enter FB token: ")
 	setToken(t)
 
 	#init dictionary
@@ -485,6 +486,8 @@ def getFriendID(name):
 			print("Name not processsed: " + i['name'])
 
 	return matches
+
+main()
 
 
 ## DEPRECATED FUNCTIONS THAT ARE NOT YET DELETED ##
